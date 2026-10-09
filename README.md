@@ -1,0 +1,25 @@
+# Action Étrangers — client demo
+
+French, responsive static prototype. No build tools or package installation required. Run `npm start` from this checkout (Node 24 and Python 3), then use local HTTP requests for verification. `npm run check` verifies JavaScript syntax.
+
+Features: six service areas from the existing client site (residence permits, DCEM, naturalisation, driving licences, family reunification, OQTF), agency introduction and language information, links to the original blog and legal pages, simulated appointment booking, and a public admin demo with confirmation/reset actions.
+
+Confirmed business details: 14 Bd Charles Nédélec, 13001 Marseille; contact@action-etranger.fr; +33 6 10 10 25 91. Website opening hours: Monday–Friday 09:00–17:00. Client appointment slots: 09:00, 10:00, 11:00, 14:00, 15:00 and 16:00, Monday–Friday. Availability uses Europe/Paris, including daylight-saving changes, independently of the visitor's time zone. Weekends, past dates/times and occupied demo slots are unavailable. Appointment duration, holidays and real scheduling remain to be agreed.
+
+The original logo is retained locally at `assets/logo.png`, retrieved from https://action-etranger.fr/wp-content/uploads/2025/01/cropped-favicon-action-etrangers.png. Content was reviewed against the client's home, services, about and contact pages on 9 October 2026. Performance/success statistics and guarantees were not carried over without substantiation. Legal representation is described as referral to a qualified professional.
+
+Two unique client-provided TikTok videos are included: `7690160346375540000` and `7623823855907294486`; the third supplied link was a duplicate. Each official TikTok player loads only after a visitor clicks. Google Maps uses the exact supplied address and also loads only on click. Direct video, profile and directions links remain available if embedding is blocked or content is unavailable. No video titles or contents are inferred; playback depends on TikTok's availability and embedding permissions. No automatic social-feed sync is implemented.
+
+Appointments exist in memory only and disappear on reload. Use fictitious data. No authentication, payments, email delivery, real availability, or server storage. Fonts, social embeds and maps require Internet access; system fonts provide a fallback. Existing legal-page links reference the current site; production terms and privacy wording must reflect the final application.
+
+## Client approval and launch
+
+Confirm approved service wording, legal business identity, appointment duration, holiday handling, cancellation/refund rules, and rights to the supplied videos. Obtain access to the domain registrar/DNS for `action-etranger.fr` and identify existing website/email hosting before any DNS changes. Domain ownership should remain with the client. No additional domain is necessary if the existing one is retained.
+
+The static demo can be deployed through GitHub Pages using the repository root. Publishing is a separate step; this checkout does not activate Pages. Agree whether the demo may be public before publishing its business content.
+
+For production, use a server application with PostgreSQL, authenticated admin access, server-side availability and appointment status, Stripe Checkout (10 EUR) and verified idempotent webhooks, email confirmations/reminders, cancellations and refunds. Confirm reservations only after the server validates payment. Do not collect card details directly. Keep secrets on the server, never in this static site. A small Linux VPS with Docker, a TLS reverse proxy, database backups and monitoring is a practical option; managed application hosting is another option with less server maintenance. Configure test Stripe payments first, then live credentials through secure settings. Never send credentials in chat.
+
+Before commercial launch: complete legal notices/privacy information, retention and deletion rules, terms and cancellation policy, appropriate consent for social embeds, accessibility checks, and client review of administrative/legal claims. Review current Stripe fees and VPS pricing with providers before budgeting. Automating social feeds requires supported provider integrations and may need account permissions; profile links work without credentials.
+
+Planned admin functions: appointment calendar, availability rules, customer records with limited necessary data, payment/refund status, reminder logs, editable service content and selected social videos. Only appointment simulation is implemented here.
