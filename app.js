@@ -4,6 +4,12 @@ const timeInput = document.querySelector('#time');
 const bookingStatus = document.querySelector('#booking-status');
 const slotStatus = document.querySelector('#slot-status');
 const admin = document.querySelector('#admin');
+const appointmentDurationMinutes = 60;
+function endTime(start, duration = appointmentDurationMinutes) {
+  const [hour, minute] = start.split(':').map(Number);
+  const total = hour * 60 + minute + duration;
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+}
 const timeSlots = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
 const parisFormatter = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit',
@@ -35,7 +41,7 @@ function initialAppointments() {
   let date = nextDay(nextAvailableDate());
   while (!isWeekday(date)) date = nextDay(date);
   return [{ id: 'sample', name: 'Camille Martin (exemple)', email: 'camille@example.com',
-    service: 'Titre de séjour', date, time: '10:00', status: 'À confirmer' }];
+    service: 'Titre de séjour', date, time: '10:00', durationMinutes: appointmentDurationMinutes, status: 'À confirmer' }];
 }
 let appointments = initialAppointments();
 dateInput.min = parisNow().date;
@@ -59,10 +65,10 @@ function renderSlots() {
     container.replaceChildren();
     times.forEach(time => {
       const button = document.createElement('button');
-      button.type = 'button'; button.className = 'time-slot'; button.textContent = time;
+      button.type = 'button'; button.className = 'time-slot'; button.textContent = `${time}–${endTime(time)}`;
       button.disabled = !available.includes(time);
       button.setAttribute('aria-pressed', String(time === timeInput.value));
-      button.setAttribute('aria-label', `${time} heure de Paris${button.disabled ? ', indisponible' : ''}`);
+      button.setAttribute('aria-label', `${time} à ${endTime(time)}, durée une heure, heure de Paris${button.disabled ? ', indisponible' : ''}`);
       button.addEventListener('click', () => { timeInput.value = time; renderSlots(); });
       container.append(button);
     });
@@ -85,7 +91,7 @@ function renderAppointments() {
     const desc = document.createElement('p');
     const prettyDate = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'medium', timeZone: 'Europe/Paris' })
       .format(new Date(`${a.date}T12:00:00Z`));
-    desc.textContent = `${a.service} · ${prettyDate} à ${a.time} (Paris) · ${a.email}`;
+    desc.textContent = `${a.service} · ${prettyDate} de ${a.time} à ${endTime(a.time, a.durationMinutes)} (1 h · Paris) · ${a.email}`;
     info.append(name, desc);
     const action = document.createElement('button'); action.className = 'status-button';
     action.textContent = a.status; action.disabled = a.status === 'Confirmé (démo)';
@@ -106,9 +112,9 @@ form.addEventListener('submit', e => {
   if (!values.name.trim()) {
     bookingStatus.textContent = 'Indiquez un prénom et un nom fictifs pour la simulation.'; return;
   }
-  appointments.push({ ...values, name: values.name.trim(), id: crypto.randomUUID(), status: 'À confirmer' });
+  appointments.push({ ...values, name: values.name.trim(), id: crypto.randomUUID(), durationMinutes: appointmentDurationMinutes, status: 'À confirmer' });
   renderAppointments();
-  bookingStatus.textContent = `Simulation enregistrée pour le ${values.date} à ${values.time}, heure de Paris. Retrouvez-la dans l’espace admin en bas de page. Aucun e-mail envoyé, aucun paiement effectué. Les données seront effacées au rechargement.`;
+  bookingStatus.textContent = `Simulation enregistrée pour le ${values.date} de ${values.time} à ${endTime(values.time)}, durée 1 heure, heure de Paris. Retrouvez-la dans l’espace admin en bas de page. Aucun e-mail envoyé, aucun paiement effectué. Les données seront effacées au rechargement.`;
   form.reset(); dateInput.value = values.date; timeInput.value = ''; renderSlots();
 });
 document.querySelectorAll('[data-service]').forEach(link => link.addEventListener('click', () => {
